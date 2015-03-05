@@ -74,7 +74,7 @@ function Calculator() {
             out = this.transformToPolandNotation(expressionArray);
             console.log(this.expression.value);
             console.log(out);
-            
+
             this.expression.value = this.calculate(out);    
         } catch (e) {
             this.expression.value = e.message;
@@ -89,7 +89,8 @@ Calculator.prototype.changeButtonsDisableStatus = function(status) {
     });
     this.operationButtonsArray.forEach(function(cur) {
         cur.disabled = status;
-    });    
+    });
+    this.resultButton.disabled = status;   
 }
 
 Calculator.prototype.isOperator = function(elem) {
