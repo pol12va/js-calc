@@ -70,11 +70,11 @@ function Calculator() {
         var out,
             expressionArray = this.expressionToArray();
 
-        out = this.transformToPolandNotation(expressionArray);
-        console.log(this.expression.value);
-        console.log(out);
-
         try {
+            out = this.transformToPolandNotation(expressionArray);
+            console.log(this.expression.value);
+            console.log(out);
+            
             this.expression.value = this.calculate(out);    
         } catch (e) {
             this.expression.value = e.message;
@@ -125,6 +125,9 @@ Calculator.prototype.expressionToArray = function() {
 }
 
 Calculator.prototype.transformToPolandNotation = function(expressionArray) {
+    if (!Array.isArray(expressionArray)) {
+        throw new Error("Error: incorrect poland notation");
+    }
     var stack = new Stack(),
         out = [];
 
@@ -155,6 +158,9 @@ Calculator.prototype.transformToPolandNotation = function(expressionArray) {
 }
 
 Calculator.prototype.calculate = function(polandNotationExpression) {
+    if (!Array.isArray(polandNotationExpression)) {
+        throw new Error("Error: incorrect poland notation");
+    }
     var stack = new Stack();
 
    polandNotationExpression.forEach(function(current) {
