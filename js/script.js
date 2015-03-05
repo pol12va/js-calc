@@ -75,8 +75,9 @@ function Calculator() {
             console.log(this.expression.value);
             console.log(out);
 
-            this.expression.value = this.calculate(out);    
+            this.expression.value = this.calculate(out).toString().replace(".", ",");    
         } catch (e) {
+            console.error(e.message);
             this.expression.value = e.message;
             this.changeButtonsDisableStatus(true);
         }     
@@ -166,8 +167,8 @@ Calculator.prototype.calculate = function(polandNotationExpression) {
 
    polandNotationExpression.forEach(function(current) {
         if (this.isOperator(current)) {
-            var operand2 = parseFloat(stack.pop()),
-                operand1 = parseFloat(stack.pop()),
+            var operand2 = parseFloat(stack.pop().toString().replace(",", ".")),
+                operand1 = parseFloat(stack.pop().toString().replace(",", ".")),
                 result = 0;
             switch (current) {
                 case '+':
