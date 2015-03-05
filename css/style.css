@@ -19,7 +19,7 @@ header {
 	margin: 10px auto;
 }
 
-.calc-button, .comma-button, .operation-button {
+.calc-button, .comma-button, .operation-button, .parentheses {
 	width: 40px;
 	height: 40px;
 }

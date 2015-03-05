@@ -6,6 +6,7 @@ function Calculator() {
     if (!(this instanceof Calculator)) {
         return new Calculator();
     }
+
     var digitButtons = document.querySelectorAll(".calc-button"),
         operationButtons = document.querySelectorAll(".operation-button"),
         self = this;
@@ -62,83 +63,33 @@ function Calculator() {
 
     this.clearButton.addEventListener("click", function() {
         self.expression.value = "";
+        self.changeButtonsDisableStatus(false);
     });
 
     this.resultButton.addEventListener("click", function() {
-        var i,
-            operatorsRegExp = /[*\/\+-]/g,
-            expression = self.expression.value
-            numbers = expression.split(operatorsRegExp), 
-            stack = new Stack(),
-            calculationStack = new Stack(),
-            expressionArray = [],
-            operators = expression.match(operatorsRegExp),
-            out = [],
-            numLen = numbers.length;
+        var out,
+            expressionArray = this.expressionToArray();
 
-        //split expression in array with numbers and operators
-        for (i = 0; i < numLen; i++) {
-            expressionArray.push(numbers[i]);
-            if (i < operators.length) {
-                expressionArray.push(operators[i]);
-            }
-        }
-
-        //transform array into Reverse Polish Notation
-        expressionArray.forEach(function(current) {
-            if (self.operators.indexOf(current) === -1) {
-                out.push(current);
-            } else {
-                if (self.o1.indexOf(current) !== -1) {
-                    if (self.o1.indexOf(stack.lastValue()) !== -1) {
-                        out.push(stack.pop());
-                    }                   
-                } else if (self.o2.indexOf(current) !== -1) {
-                    if (stack.lastValue() !== undefined) {
-                        while (stack.lastValue() !== undefined) {
-                            out.push(stack.pop());
-                        }
-                    }
-                }
-                stack.push(current);
-            }
-        });
-        while (stack.lastValue()) {
-            out.push(stack.pop());
-        }
-        console.log(self.expression.value);
+        out = this.transformToPolandNotation(expressionArray);
+        console.log(this.expression.value);
         console.log(out);
 
-        //result calculation
-        out.forEach(function(current) {
-            if (self.isOperator(current)) {
-                var operand2 = parseFloat(calculationStack.pop()),
-                    operand1 = parseFloat(calculationStack.pop()),
-                    result = 0;
-                switch (current) {
-                    case '+':
-                        result = operand1 + operand2;
-                        break;
-                    case '-':
-                        result = operand1 - operand2;
-                        break;
-                    case '*':
-                        result = operand1 * operand2;
-                        break;
-                    case '/':
-                        result = operand1 + operand2;
-                        break;
-                    default:
+        try {
+            this.expression.value = this.calculate(out);    
+        } catch (e) {
+            this.expression.value = e.message;
+            this.changeButtonsDisableStatus(true);
+        }     
+    }.bind(this)); 
+}
 
-                }
-                calculationStack.push(result);
-                console.log(result);
-            } else {
-                calculationStack.push(current);
-            }
-        });
-        self.expression.value = calculationStack.pop();
-    }); 
+Calculator.prototype.changeButtonsDisableStatus = function(status) {
+    this.digitButtonsArray.forEach(function(cur) {
+        cur.disabled = status;
+    });
+    this.operationButtonsArray.forEach(function(cur) {
+        cur.disabled = status;
+    });    
 }
 
 Calculator.prototype.isOperator = function(elem) {
@@ -151,6 +102,95 @@ Calculator.prototype.isLastSymbolOperator = function() {
         return true;
     }
     return false;
+}
+
+Calculator.prototype.expressionToArray = function() {
+    var i,
+        operatorsRegExp = /[*\/\+-]/g,
+        expression = this.expression.value
+        numbers = expression.split(operatorsRegExp),
+        expressionArray = [],
+        operators = expression.match(operatorsRegExp),
+        numLen = numbers.length;
+
+    //split expression in array with numbers and operators
+    for (i = 0; i < numLen; i++) {
+        expressionArray.push(numbers[i]);
+        if (i < operators.length) {
+            expressionArray.push(operators[i]);
+        }
+    } 
+
+    return expressionArray;
+}
+
+Calculator.prototype.transformToPolandNotation = function(expressionArray) {
+    var stack = new Stack(),
+        out = [];
+
+    expressionArray.forEach(function(current) {
+        if (this.operators.indexOf(current) === -1) {
+            out.push(current);
+        } else {
+            if (this.o1.indexOf(current) !== -1) {
+                if (this.o1.indexOf(stack.lastValue()) !== -1) {
+                    out.push(stack.pop());
+                }                   
+            } else if (this.o2.indexOf(current) !== -1) {
+                if (stack.lastValue() !== undefined) {
+                    while (stack.lastValue() !== undefined) {
+                        out.push(stack.pop());
+                    }
+                }
+            }
+            stack.push(current);
+        }
+    }.bind(this));
+
+    while (stack.lastValue()) {
+        out.push(stack.pop());
+    }
+
+    return out;
+}
+
+Calculator.prototype.calculate = function(polandNotationExpression) {
+    var stack = new Stack();
+
+   polandNotationExpression.forEach(function(current) {
+        if (this.isOperator(current)) {
+            var operand2 = parseFloat(stack.pop()),
+                operand1 = parseFloat(stack.pop()),
+                result = 0;
+            switch (current) {
+                case '+':
+                    result = operand1 + operand2;
+                    break;
+                case '-':
+                    result = operand1 - operand2;
+                    break;
+                case '*':
+                    result = operand1 * operand2;
+                    break;
+                case '/':
+                    if (operand2 !== 0) {
+                        result = operand1 / operand2;  
+                    } else {
+                        console.log("Error: Dividing by zero");
+                        throw new Error("Cannot divide by zero");
+                    }
+                    break;
+                default:
+                    throw new Error("Unexpected operation");    
+            }
+            stack.push(result);
+            console.log(result);
+        } else {
+            stack.push(current);
+        }
+    }.bind(this));
+
+    return stack.pop();                
 }
 
 function Stack() {
