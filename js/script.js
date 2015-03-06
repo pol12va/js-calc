@@ -30,10 +30,9 @@ function Calculator() {
 
     this.operationButtonsArray.forEach(function(cur) {
         cur.addEventListener("click", function() {
-            var expVal = self.expression.value,
-                len = expVal.length;
+            var expVal = self.expression.value;
 
-            if (len > 0) {
+            if (expVal.length > 0) {
                 //to prevent two operators in a row
                 if (!self.isLastSymbolOperator()) {
                     self.expression.value += cur.value;
@@ -92,11 +91,11 @@ Calculator.prototype.changeButtonsDisableStatus = function(status) {
         cur.disabled = status;
     });
     this.resultButton.disabled = status;   
-}
+};
 
 Calculator.prototype.isOperator = function(elem) {
     return this.operators.indexOf(elem) !== -1 ? true : false;
-}
+};
 
 Calculator.prototype.isLastSymbolOperator = function() {
     var expVal = this.expression.value;
@@ -104,7 +103,7 @@ Calculator.prototype.isLastSymbolOperator = function() {
         return true;
     }
     return false;
-}
+};
 
 Calculator.prototype.expressionToArray = function() {
     var i,
@@ -124,7 +123,7 @@ Calculator.prototype.expressionToArray = function() {
     } 
 
     return expressionArray;
-}
+};
 
 Calculator.prototype.transformToPolandNotation = function(expressionArray) {
     if (!Array.isArray(expressionArray)) {
@@ -157,7 +156,7 @@ Calculator.prototype.transformToPolandNotation = function(expressionArray) {
     }
 
     return out;
-}
+};
 
 Calculator.prototype.calculate = function(polandNotationExpression) {
     if (!Array.isArray(polandNotationExpression)) {
@@ -199,7 +198,7 @@ Calculator.prototype.calculate = function(polandNotationExpression) {
     }.bind(this));
 
     return stack.pop();                
-}
+};
 
 function Stack() {
     if (!(this instanceof Stack)) {
@@ -226,4 +225,4 @@ Stack.prototype.lastValue = function() {
     if (len > 0) {
         return this.stack[len - 1];
     }
-}
+};
