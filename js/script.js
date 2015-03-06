@@ -1,6 +1,6 @@
-function init() {
-    var calc = new Calculator();
-}
+(function init() {
+    new Calculator();
+})();
 
 function Calculator() {
     if (!(this instanceof Calculator)) {
