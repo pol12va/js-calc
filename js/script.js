@@ -1,6 +1,6 @@
-(function init() {
+(function() {
     new Calculator();
-})();
+}());
 
 function Calculator() {
     if (!(this instanceof Calculator)) {
