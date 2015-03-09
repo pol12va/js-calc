@@ -62,6 +62,7 @@ function Calculator() {
 
     this.clearButton.addEventListener("click", function() {
         self.expression.value = "";
+        self.changeExpressionStyle("#000000", "");
         self.changeButtonsDisableStatus(false);
     });
 
@@ -76,8 +77,8 @@ function Calculator() {
 
             this.expression.value = this.calculate(out).toString().replace(".", ",");    
         } catch (e) {
-            console.error(e.message);
             this.expression.value = e.message;
+            this.changeExpressionStyle("#ff0033", "2px solid #ff0033");
             this.changeButtonsDisableStatus(true);
         }     
     }.bind(this)); 
@@ -91,6 +92,11 @@ Calculator.prototype.changeButtonsDisableStatus = function(status) {
         cur.disabled = status;
     });
     this.resultButton.disabled = status;   
+};
+
+Calculator.prototype.changeExpressionStyle = function(color, border) {
+    this.expression.style.color = color;
+    this.expression.style.border = border;
 };
 
 Calculator.prototype.isOperator = function(elem) {

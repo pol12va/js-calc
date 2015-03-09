@@ -1,7 +1,14 @@
+body {
+    font-family: Georgia, Helvetica, Arial, "Times New Roman";
+}
+
 .wrap {
     position: relative;
     width: 1140px;
     margin: 0 auto;
+    border: 1px solid rgb(145, 0, 0);
+    border-top: 10px solid rgb(80, 0, 0);
+    border-bottom: 10px solid rgb(80, 0, 0);
 }
 
 header {
